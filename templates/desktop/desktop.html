@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+<body>
+    <div class="container" id="desktop-body">
+        <table class="table table-bordered table-condensed">
+            <thead>
+                <th>Call</th>
+                <th>Time</th>
+                <th></th>
+                <th>Stat (ms)</th>
+                <th>min</th>
+                <th>avg</th>
+                <th>max</th>
+                <th>last</th>
+                <th>dev</th>
+            </thead>
+            <tbody id="call-table-body">
+                {% if calls %}
+                    {% for call in calls %}
+                    <tr class="firstRow">
+                        <td rowspan="5">{{ call.to }}</td>
+                        <td rowspan="5">{{ call.time }}</td>
+                        <td rowspan="3">Transmitted: </td>
+                        <td>Loss Period: </td>
+                        <td>{{ call.transmitted.loss.min }}</td>
+                        <td>{{ call.transmitted.loss.avg }}</td>
+                        <td>{{ call.transmitted.loss.max }}</td>
+                        <td>{{ call.transmitted.loss.last }}</td>
+                        <td>{{ call.transmitted.loss.dev }}</td>
+                    </tr>
+                    <tr>
+                        <td>Jitter: </td>
+                        <td>{{ call.transmitted.jitter.min }}</td>
+                        <td>{{ call.transmitted.jitter.avg }}</td>
+                        <td>{{ call.transmitted.jitter.max }}</td>
+                        <td>{{ call.transmitted.jitter.last }}</td>
+                        <td>{{ call.transmitted.jitter.dev }}</td>
+                    </tr>
+                    <tr>
+                        <td>RTT: </td>
+                        <td>{{ call.transmitted.rtt.min }}</td>
+                        <td>{{ call.transmitted.rtt.avg }}</td>
+                        <td>{{ call.transmitted.rtt.max }}</td>
+                        <td>{{ call.transmitted.rtt.last }}</td>
+                        <td>{{ call.transmitted.rtt.dev }}</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2">Received:</td>
+                        <td>Loss Period: </td>
+                        <td>{{ call.received.loss.min }}</td>
+                        <td>{{ call.received.loss.avg }}</td>
+                        <td>{{ call.received.loss.max }}</td>
+                        <td>{{ call.received.loss.last }}</td>
+                        <td>{{ call.received.loss.dev }}</td>
+                    </tr>
+                    <tr class="lastRow">
+                        <td>Jitter: </td>
+                        <td>{{ call.received.jitter.min }}</td>
+                        <td>{{ call.received.jitter.avg }}</td>
+                        <td>{{ call.received.jitter.max }}</td>
+                        <td>{{ call.received.jitter.last }}</td>
+                        <td>{{ call.received.jitter.dev }}</td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr><td colspan="9" align="center">No calls found</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</body>
+<link href="{% static 'css/desktop/desktop.css' %}" rel="stylesheet">
+
+{% endblock content %}
