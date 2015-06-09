@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ callId }} MTR Stats{% endblock title %}
+{% block content %}
+<link rel="stylesheet" type="text/css" src="{% static 'css/mtr.css' %}"></link> 
+{% if hops %}
+    <svg id="svg-canvas" width=960 height=600></svg>
+    <script>
+        var hops = {{ hops | safe }}
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.js"></script>
+    <script src="{% static 'd3/dagre-d3.min.js' %}"></script>
+    <script src="{% static 'js/traceroute.js' %}"></script>
+{% else %}
+    <p>Error: call not found</p>
+{% endif %}
+{% endblock content %}

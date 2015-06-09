@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{%  block title %}Call {{ callId }}{% endblock title %}
+{% block content %}
+{% load static %}
+
+<div id="container" style="width:100%; height:400px;"></div>
+
+<script>
+    var recData = {{ recData }};
+    var recLostData = {{ recLostData }};
+</script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="{% static 'js/serverGraph.js' %}"></script>
+{% endblock content %}

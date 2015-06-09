@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Calls{% endblock title %}
+{% block content %}
+<table class="table table-striped">
+    <thead>
+        <th>Call Id</th>
+        <th>Desktop Reports</th>
+        <th>Server Reports</th>
+        <th>Android Reports</th>
+        <th>Last Report</th>
+    </thead>
+    <tbody>
+        {% if callData %}
+            {% for call in callData %}
+                <tr>
+                    <td>{{ call.id }}</td>
+                    <td>{{ call.desktop }} <a href="{% url 'mtr' call.id %}">MTR</a>  <a href="{% url 'desktopCall' call.id %}">Stats</a></td>
+                    <td><a href="{% url 'serverGraph' call.id %}">{{ call.server }}</a></td>
+                    <td>{{ call.android }}</td>
+                    <td>eventually</td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr><td rowspan="5">Unable to load data</td></tr>
+        {% endif %}
+    </tbody>
+</table>
+{% endblock content %}

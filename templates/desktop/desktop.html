@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 {% load static %}
+<link href="{% static 'css/desktop/desktop.css' %}" rel="stylesheet">
 
-
+{% block title %}Desktop Agent Call Data{% endblock title %}
 {% block content %}
-<body>
-    <div class="container" id="desktop-body">
         <table class="table table-bordered table-condensed">
             <thead>
-                <th>Call</th>
+                <th>Call ID</th>
+                <th>Recipient</th>
                 <th>Time</th>
                 <th></th>
                 <th>Stat (ms)</th>
@@ -21,6 +21,7 @@
                 {% if calls %}
                     {% for call in calls %}
                     <tr class="firstRow">
+                        <td rowspan="5"><a href="/desktop/call/{{ call.id }}">{{ call.id }}</a></td>
                         <td rowspan="5">{{ call.to }}</td>
                         <td rowspan="5">{{ call.time }}</td>
                         <td rowspan="3">Transmitted: </td>
@@ -70,8 +71,5 @@
                 {% endif %}
             </tbody>
         </table>
-    </div>
-</body>
-<link href="{% static 'css/desktop/desktop.css' %}" rel="stylesheet">
 
 {% endblock content %}

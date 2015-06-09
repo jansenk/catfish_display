@@ -7,21 +7,21 @@
     <title>Koi</title>
 </head>
 <body>
-    <nav class="navbar navbar-default">
+    <nav class="navbar navbar-default" id="top-nav">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
-                <a class="navbar-brand" href="#">Koi</a>
+                <a class="navbar-brand" href="/">Koi</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li class="active">
+                    <li>
                         <a href="/desktop/">Desktop Agent</a>
                     </li>
                     <li>
-                        <a href="#">Server Agent</a>
+                        <a href="/server/">Server Agent</a>
                     </li>
                     <li>
                         <a href="#">Android Agent</a>
@@ -30,6 +30,10 @@
             </div>
         </div>
     </nav>
+    <div class="container-fluid" id="page-title">
+        <h1>{% block title %}{% endblock title %} </h1>
+    </div>
+    <hr>
     {% block content %}
     {% endblock content %}
 

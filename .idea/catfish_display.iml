@@ -5,5 +5,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="tango_with_django_project" />
+    <orderEntry type="module" module-name="mysite" />
+    <orderEntry type="module" module-name="testShop" />
   </component>
 </module>

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Server Agent Call Data{% endblock title %}
+
+{% block content %}
+
+<table class="table table-striped">
+    <thead>
+        <th>Call ID</th>
+        <th>Peer</th>
+        <th>Duration</th>
+        <th>Received Packets</th>
+        <th>Lost Packets (Received)</th>
+        <th>Percent Lost (Received)</th>
+        <th>Jitter (Received)</th>
+        <th>Sent Packets</th>
+        <th>Lost Packets (Sent)</th>
+        <th>Percent Lost (Sent)</th>
+        <th>Jitter (Sent)</th>
+    </thead>
+    <tbody>
+        {% if calls %}
+            {% for call in calls %}
+                <tr>
+                    <td><a href="graph/{{ call.call_id }}/">{{ call.call_id }}</a></td>
+                    <td>{{ call.peer }}</td>
+                    <td>{{ call.duration }}</td>
+                    <td>{{ call.rec_packets }}</td>
+                    <td>{{ call.rec_lost }}</td>
+                    <td>{{ call.rec_lost_pct }}</td>
+                    <td>{{ call.rec_jitter }}</td>
+                    <td>{{ call.sent_packets }}</td>
+                    <td>{{ call.sent_lost }}</td>
+                    <td>{{ call.sent_lost_pct }}</td>
+                    <td>{{ call.sent_jitter }}</td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr><td colspan="11" align="center">No calls found</td></tr>
+        {% endif %}
+    </tbody>
+</table>
+{% endblock content %}
+
+
+
