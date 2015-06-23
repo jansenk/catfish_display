@@ -67,7 +67,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'catfish',
         'USER': 'servr',
-        'PASSWORD': 'givemedata!',
+        'PASSWORD': 'passpasspass',
         'HOST': 'localhost',
     }
 }

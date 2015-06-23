@@ -1,0 +1,29 @@
+   <h2>Transmitted Data (Desktop -> Server)</h2>
+    <h3>Packet Info</h3>
+    {% if txPacket %}
+        <div id="txpContainer" style="width:100%; height:400px;"></div>
+    {% else %}
+        <b>No data found</b>
+    {% endif %}
+
+    <h3>Latency Info</h3>
+    {% if txLatency %}
+        <div id="txlContainer" style="width:100%; height:400px;"></div>
+    {% else %}
+        <b>No data found</b>
+    {% endif %}
+
+    <h2>Recieved Data (Server -> Desktop)</h2>
+    <h3>Packet Info</h3>
+    {% if rxPacket %}
+        <div id="rxpContainer" style="width:100%; height:400px;"></div>
+    {% else %}
+        <b>No data found</b>
+    {% endif %}
+
+    <h3>Latency Info</h3>
+    {% if rxLatency %}
+        <div id="rxlContainer" style="width:100%; height:400px;"></div>
+    {% else %}
+        <b>No data found</b>
+    {% endif %}

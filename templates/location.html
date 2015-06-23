@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}
+	Data for location {{ location.name }}
+{% endblock title %}
+{% block content %}
+	<table class="table">
+		<tr id="recent-data-row">
+			<td>
+				Most Recent Dataset<br><br>Call <a href="{% url 'call' location.most_recent_call_id %}">{{ location.most_recent_call_id }}</a>
+			</td>
+			<td>
+				{% include "traceroute_table.html" with target_hop=location.most_recent_traceroute_hop_id %}
+			</td>
+		</tr>
+		<tr>
+			<td>Other calls using this location</td>
+			<td> 
+				<table class="table table-striped">
+					{% regroup location.traceroutehop_set.all by traceroute.report.call_id as grouped_hops %}
+					{% for group in grouped_hops %}
+                        {% if group.grouper != location.most_recent_call_id %}
+					        <tr><td><a href="{% url 'call' group.grouper %}">{{ group.grouper }}</a></tr></td>
+                        {% endif %}
+					{% empty %}
+					<tr><td>No other calls found</td></tr>
+					{% endfor %}
+				</table>
+			</td>
+		</tr>
+	</table>
+{% endblock content %}

@@ -1,44 +1,41 @@
 from django.shortcuts import render
+from django.shortcuts import get_object_or_404
 import pytz, time, datetime
-from models import Traceroute, TracerouteHop, Report, StatsTxRx, CallStats, TxRxLatency, ServerReport
+from models import Traceroute, TracerouteHop, Report, StatsTxRx, CallStats, TxRxLatency, ServerReport, TracerouteLocation
 import json
+from call import Call
 # Create your views here.
 # calls : listof {transmission: {jitter, loss, rtt}, reception: {loss, jitter}}
 
 def index(request):
-    entries = Report.objects.exclude(call_id="").order_by("call_id").order_by("entry_time")
-    callData = []
-    current_data = {"id": entries[0].call_id, "desktop": 0, "server":0, "android":0}
-    for call in entries:
-        if call.call_id != current_data['id']:
-            callData.append(current_data)
-            current_data = {"id": call.call_id, "desktop": 0, "server":0, "android":0}
-        current_data[call.agent_class] += 1
-    callData.append(current_data)
-    return render(request, 'index.html', dict(callData=callData))
-
+    entries = Report.objects.exclude(call_id="").order_by("call_id")
+    calls = []
+    current_id = None
+    for report in entries:
+       	if report.call_id != current_id:
+      			calls.append(Call(report.call_id))
+			current_id = report.call_id
+    return render(request, 'index.html', dict(calls=calls))
 
 def call(request, callId):
-    callEntries = Report.objects.filter(call_id=callId)
-    desktop = callEntries.filter(agent_class="desktop")
-    stats = traceroutes = None
-
-
-#ordered desktop reports -> json data for charts
-def getDesktopCharts(reports):
-    charts = dict()
-    for report in reports:
-
-
-def getServerCharts(reports):
-
-
+    try:
+        targetCall = Call(callId)
+    except Exception as e:
+        print "Cannot create call " + str(e)
+        return render(request, 'call.html', dict(callId=callId))
+    else:
+        context = targetCall.getChartJson()
+        context['call_duration'] = targetCall.get_call_time()
+        context['callId'] = callId
+        context['call_to'] = targetCall.getCallTo()
+        context['call'] = targetCall
+        return render(request, 'call.html', context)
 
 def desktopHelper(request, callId=None):
     if callId is None:
-        allCalls = Metadata.objects.filter(agent_class="desktop")
+        allCalls = Report.objects.filter(agent_class="desktop")
     else:
-        allCalls = Metadata.objects.filter(agent_class="desktop", call_id=callId)
+        allCalls = Report.objects.filter(agent_class="desktop", call_id=callId)
     callDataList = []
     for call in allCalls:
         callStats = CallStats.objects.get(metadata_id_fk=call)
@@ -86,23 +83,29 @@ def callServerGraph(request, callId):
 
 def desktopMtrDisplay(request, callId):
     try:
-        #get the most recent mtr data for this call
-        call = Metadata.objects.filter(call_id=callId, agent_class="desktop").order_by("timestamp")[0]
-        print "Have call"
-        callMtr = DesktopMtr.objects.get(metadata_id_fk=call)
-        print "Have MTR"
-        callMtrConnections = TracerouteHop.objects.filter(mtr_id_fk=callMtr).order_by("hop")
+        call = Call(callId)
+        print "have call"
+        if not call.has_traceroute():
+            print "No traceroute found for %s" % callId
+        trace = call.traceroutes[-1].traceroute_set.get()
+        callMtrConnections = trace.traceroutehop_set.order_by("hop")
         print "have connections x %d" % len(callMtrConnections)
         hops = [hop.displayDict() for hop in callMtrConnections]
         print "list is good"
         print "all good"
     except Exception as e:
         print e
-        return render(request, 'desktop/mtrFlow.html', dict(callId=callId))
+        return render(request, 'altTraceroute.html', dict(callId=callId))
     print json.dumps(hops)
-    return render(request, 'desktop/mtrFlow.html', dict(callId=callId, hops="%s" % json.dumps(hops)))
+    return render(request, 'altTraceroute.html', dict(callId=callId, trace=hops))
 
 def dag(request):
     return render(request, 'dagretest.html')
+
+def tracerouteLocation(request, location_id):
+    location = get_object_or_404(TracerouteLocation, id=location_id)
+    recent_hop = TracerouteHop.objects.get(id=location.most_recent_traceroute_hop_id)
+    return render(request, "location.html", dict(location=location, hops=recent_hop.traceroute.traceroutehop_set.all()))
+
 
 

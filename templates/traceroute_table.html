@@ -1,0 +1,35 @@
+<table class="table table-bordered {% if additional_class %} {{ additional_class }} {% endif %}"
+       {% if table_id %} id="{{ table_id }}" {% endif %}>
+	<tr class="center">
+		<td rowspan="2">Host</td>
+		<td colspan="2">Packets</td>
+		<td colspan="4">Ping</td>
+	</tr>
+	<tr class="center">
+		<td>Sent</td>
+		<td>Loss Percent</td>
+		<td>Last</td>
+		<td>Best</td>
+		<td>Worst</td>
+		<td>Average</td>
+	</tr>
+    {% for hop in hops %}
+	<tr class="{% if target_hop == hop.id %}
+	              info
+	            {% else %}
+	              {{ hop.getClass }}
+                {% endif %}">
+        <td><a href="{% url 'location' hop.location.id %}">{{ hop.name }}</a></td>
+        <td>{{ hop.snt }}</td>
+		<td>{{ hop.loss_pct }}</td>
+		<td>{{ hop.last }}</td>
+		<td>{{ hop.best }}</td>
+		<td>{{ hop.wrst }}</td>
+		<td>{{ hop.avg }}</td>
+	</tr>
+    {% empty %}
+    <tr>
+        <td colspan="7" class="error">No traceroute data found</td>
+    </tr>
+    {% endfor %}
+</table>

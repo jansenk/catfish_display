@@ -19,12 +19,12 @@ class Report(models.Model):
     timestamp = models.DateTimeField()
     auth = models.CharField(max_length=16)
     call_id = models.CharField(max_length=64)
-    entry_time = models.DateTimeField()
+    entry_time = models.DateTimeField(null=True)
 
     def has_traceroute(self):
-        return len(self.traceroute_set) != 0
+        return len(self.traceroute_set.all()) != 0
     def has_desktop_stats(self):
-        return len(self.callstats_set) != 0
+        return len(self.callstats_set.all()) != 0
 
     class Meta:
         managed = False
@@ -40,18 +40,30 @@ class Traceroute(models.Model):
         managed = False
         db_table = 'traceroute'
 
+class TracerouteLocation(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=64)
+    most_recent_call_id = models.CharField(max_length=64, null=True)
+    most_recent_traceroute_hop_id = models.IntegerField(null=True)
+    class Meta:
+       managed = False
+       db_table = 'traceroute_locations'
+
+
 class TracerouteHop(models.Model):
     id = models.AutoField(primary_key=True)
-    traceroute = models.ForeignKey(Traceroute, db_column='traceroute_id_fk')
-    name = models.CharField(max_length=64)
     loss_pct = models.DecimalField(max_digits=10, decimal_places=0)
+    name = models.CharField(max_length=64)
     snt = models.IntegerField()
     last = models.DecimalField(max_digits=10, decimal_places=0)
     avg = models.DecimalField(max_digits=10, decimal_places=0)
     best = models.DecimalField(max_digits=10, decimal_places=0)
     wrst = models.DecimalField(max_digits=10, decimal_places=0)
     stdev = models.DecimalField(max_digits=10, decimal_places=0)
-    hop = models.DecimalField(max_digits=10, decimal_places=0)
+    hop = models.IntegerField()
+    location = models.ForeignKey(TracerouteLocation, db_column="traceroute_location_id_fk")
+    traceroute = models.ForeignKey(Traceroute, db_column='traceroute_id_fk')
+
 
     class Meta:
         managed = False
@@ -71,16 +83,21 @@ class TracerouteHop(models.Model):
     # If any values are "abnormal" the color is red
     # If any of the values are "questionable" the color is yellow
     # else, green
-    def getColor(self):
+    def getClass(self):
         if self.name == "???":
-            return "#FFFF85"
+            return "warning"
+        elif self.isDanger():
+            return "danger"
         else:
-            return "#99FF66"
+            return ""
+
+    def isDanger(self):
+        return False
 
     def displayDict(self):
         label = self.getLabel()
-        print "got label"
-        return {"label": label, "style": "fill: %s" % self.getColor()}
+        return {"label": label, "class": self.getClass()}
+
 
 
 callStatsTimeRe = re.compile("(.*?)h:(.*?)m:(.*?)s")
@@ -96,11 +113,11 @@ class CallStats(models.Model):
     report = models.ForeignKey(Report, db_column='report_id_fk')
 
     def getTxRx(self):
-        return {txrx.type: txrx for txrx in self.statxtxrx_set}
+        return {txrx.type: txrx for txrx in self.statstxrx_set.all()}
 
     def call_time_in_seconds(self):
         match = callStatsTimeRe.search(self.call_time)
-        return sum([chunk*conversion for chunk, conversion in zip(match.groups(), [3600, 60, 1])])
+        return sum([chunk*conversion for chunk, conversion in zip(map(int, match.groups()), [3600, 60, 1])])
 
     class Meta:
         managed = False
@@ -133,7 +150,7 @@ class StatsTxRx(models.Model):
         db_table = 'desktop_stats_txrx'
 
     def getLatencyNumbers(self):
-        return {txrxl.name: txrxl for txrxl in self.txrxlatency_set}
+        return {txrxl.name: int(txrxl.last) for txrxl in self.txrxlatency_set.all()}
 
 class TxRxLatency(models.Model):
     id = models.AutoField(primary_key=True)

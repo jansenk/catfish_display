@@ -10,19 +10,17 @@
         <th>Last Report</th>
     </thead>
     <tbody>
-        {% if callData %}
-            {% for call in callData %}
+            {% for call in calls %}
                 <tr>
-                    <td>{{ call.id }}</td>
-                    <td>{{ call.desktop }} <a href="{% url 'mtr' call.id %}">MTR</a>  <a href="{% url 'desktopCall' call.id %}">Stats</a></td>
-                    <td><a href="{% url 'serverGraph' call.id %}">{{ call.server }}</a></td>
-                    <td>{{ call.android }}</td>
-                    <td>eventually</td>
+                    <td><a href="{% url 'call' call.id %}">{{ call.id }}</a></td>
+                    <td>{{ call.desktop_count|add:call.traceroute_count }}</td>
+                    <td>{{ call.server_count }}</a></td>
+                    <td>{{ call.android_count }}</td>
+                    <td>{{ call.most_recent_report_time }}</td>
                 </tr>
+	    {% empty %}
+                <tr><td rowspan="5">No call data found</td></tr>
             {% endfor %}
-        {% else %}
-            <tr><td rowspan="5">Unable to load data</td></tr>
-        {% endif %}
     </tbody>
 </table>
 {% endblock content %}

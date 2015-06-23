@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Traceroute for call {{ callId }}{% endblock title %}
+{% block content %}
+{% if trace %}
+    <div class="row" id="trace">
+    {% for hop in trace %}
+        <div class="hop col-md-1 {{ hop.class }}">{{ hop.label | linebreaks }}</div>
+            {% if not forloop.last %}
+                <img class="col-md-1" src="{% static 'arrow.gif' %}">
+            {% endif %}
+    {% endfor %}
+    </div>
+{% else %}
+No data found
+{% endif %}
+{% endblock content %}

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/catfish_display.iml" filepath="$PROJECT_DIR$/.idea/catfish_display.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/catfish_display_project.iml" filepath="$PROJECT_DIR$/.idea/catfish_display_project.iml" />
       <module fileurl="file://$PROJECT_DIR$/../mysite/.idea/mysite.iml" filepath="$PROJECT_DIR$/../mysite/.idea/mysite.iml" />
       <module fileurl="file://$PROJECT_DIR$/../collector/tango_with_django_project/.idea/tango_with_django_project.iml" filepath="$PROJECT_DIR$/../collector/tango_with_django_project/.idea/tango_with_django_project.iml" />
       <module fileurl="file://C:/testShop/.idea/testShop.iml" filepath="C:/testShop/.idea/testShop.iml" />

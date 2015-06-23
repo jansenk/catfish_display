@@ -1,7 +1,38 @@
 {% extends 'base.html' %}
-{% block title %}Call {{ callId }}{% endblock title %}
-{% block includes %}
-{% endblock includes %}
-
-{% block body %}
+{% load static %}
+{% block title %}
+    Call {{ callId }}:
+        {% if call_duration %}
+            To: {{ call_to }}
+            Duration: {{ call_duration }}
+        {% else %}
+            No call data found
+        {% endif %}
+{% endblock title %}
+{% block content %}
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="active"><a href="#data" role="tab" data-toggle="tab">Data</a></li>
+        <li><a href="#traceroute" role="tab" data-toggle="tab">Traceroute</a></li>
+    </ul>
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div class="tab-pane active" id="data">
+            {% include "callData.html" %}
+        </div>
+        <div class="tab-pane" id="traceroute">
+            <br>
+           {% include "traceroute_table.html" with hops=call.traceroutes.0.traceroute_set.first.traceroutehop_set.all only %}
+        </div>
+    </div>
+<script>
+    var activeGraphs = {};
+    {% if rxLatency %}activeGraphs['rxlContainer'] = {{ rxLatency | safe }};{% endif %}
+    {% if txLatency %}activeGraphs['txlContainer'] = {{ txLatency | safe }};{% endif %}
+    {% if rxPacket %}activeGraphs['rxpContainer'] = {{ rxPacket | safe }};{% endif %}
+    {% if txPacket %}activeGraphs['txpContainer'] = {{ txPacket | safe }};{% endif %}
+</script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="{% static 'js/callGraphs.js' %}"></script>
+{% endblock content %}
 

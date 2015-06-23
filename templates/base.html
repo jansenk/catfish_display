@@ -13,29 +13,16 @@
             <div class="navbar-header">
                 <a class="navbar-brand" href="/">Koi</a>
             </div>
-
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                    <li>
-                        <a href="/desktop/">Desktop Agent</a>
-                    </li>
-                    <li>
-                        <a href="/server/">Server Agent</a>
-                    </li>
-                    <li>
-                        <a href="#">Android Agent</a>
-                    </li>
-                </ul>
-            </div>
         </div>
     </nav>
     <div class="container-fluid" id="page-title">
         <h1>{% block title %}{% endblock title %} </h1>
     </div>
     <hr>
+    <div class="container" id="content">
     {% block content %}
     {% endblock content %}
+    </div>
 
     <script src="{% static 'bootstrap/js/bootstrap.min.js' %}" ></script>
 </body>
